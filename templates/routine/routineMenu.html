@@ -4,7 +4,10 @@
     여기에서 기본 목록 보이고
     루틴 생성(버튼), 날짜별 루틴 조회 되도록 구현하기!
 -->
-<div><a href="{% url 'routine:load_page' %}">새 routine 생성</a></div>
-<div><a href="#">routine 목록 조회</a></div>
-<div><a href="#">routine 단건 조회</a></div>
+<div class="container w-75 mt-3">
+    {{ user.id }}
+    <div><a class="btn btn-primary m-3" href="{% url 'routine:load_page' %}">새 routine 생성</a></div>
+    <div><a class="btn btn-primary m-3" href="{% url 'routine:readAll' user.id %}">routine 목록 조회</a></div>
+    <div><a class="btn btn-primary m-3" href="#">routine 단건 조회</a></div>
+</div>
 {% endblock %}

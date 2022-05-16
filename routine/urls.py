@@ -22,4 +22,5 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('create/', views.create, name='create'),
     path('load_page/', views.load_page, name='load_page'),
+    path('readAll/<int:user_id>', views.readAll, name='readAll'),
 ]

@@ -70,6 +70,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'common_tags': 'templatetags.common_tags'
+            }
         },
     },
 ]
@@ -83,10 +86,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'danbi',  
+        'NAME': 'danbi',
         'USER': 'postgres',
-        'PASSWORD': '1234',  
-        'HOST': 'localhost',  
+        'PASSWORD': '1234',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }

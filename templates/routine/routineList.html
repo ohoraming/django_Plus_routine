@@ -1,0 +1,39 @@
+{% extends 'base.html' %} 
+{% block content %}
+{% load common_tags %}
+<div class="container mt-5 w-75">
+    <p>{{ user.username }}님의 전체 루틴 리스트입니다!</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">title</th>
+                <th scope="col">category</th>
+                <th scope="col">goal</th>
+                <th scope="col">alarm</th>
+                <th scope="col">day</th>
+                <th scope="col">result</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if routine_list %}  <!-- my_routine이 있으면,-->
+            {% for routine in routine_list %}
+            <tr>
+                <th scope="row">{{ routine.pk }}</th>
+                <td>{{ routine.title }}</td>
+                <td>{{ routine.category }}</td>
+                <td>{{ routine.goal }}</td>
+                <td>{{ routine.is_alarm }}</td>
+                <td>{{ routine.day }}</td>
+                <td>{{ routine.pk|pick }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="7"><h3>등록된 routine이 없습니다!</h5></td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

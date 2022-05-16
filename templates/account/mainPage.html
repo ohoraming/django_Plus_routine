@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
+<div class="container w-75">
     <div>
-        <a href="{% url 'routine:index' %}">Routine 서비스로 이동합니다!</a>
+        <a class="btn btn-primary m-4" href="{% url 'routine:index' %}">Routine 서비스로 이동!</a>
     </div>
     <div>
         <a href="#">다른 A 서비스</a>
@@ -12,4 +13,5 @@
     <div>
         <a href="#">다른 C 서비스</a>
     </div>
+</div>
 {% endblock %}
