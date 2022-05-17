@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<!--
+-->
+<div class="container w-75 mt-3">
+    일정 결과 입력폼
+    <td>
+        <form action="#" method="post"></form>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="result" id="RadioNot" value="NOT">
+            <label class="form-check-label" for="RadioNot">NOT(안 함)</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="result" id="RadioTry" value="TRY">
+            <label class="form-check-label" for="RadioTry">TRY(시도)</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="result" id="RadioDone" value="DONE">
+            <label class="form-check-label" for="RadioDone">DONE(완료)</label>
+        </div>
+    </td>
+    <td><button type="submit" class="btn btn-primary">저장</button></td>
+</div>
+{% endblock %}

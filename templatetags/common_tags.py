@@ -1,6 +1,7 @@
 from django import template
-register = template.Library()
 from routine.models import routine
+
+register = template.Library()
 
 def get_day(value):
     return value.__dict__['day']

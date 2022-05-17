@@ -21,6 +21,10 @@ app_name = 'routine'
 urlpatterns = [
     path('', views.index, name='index'),
     path('create/', views.create, name='create'),
-    path('load_page/', views.load_page, name='load_page'),
+    path('routine_form/', views.renderRoutineForm, name='renderRoutineForm'),
     path('readAll/<int:user_id>', views.readAll, name='readAll'),
+    path('readOne/<int:routine_id>', views.readOne, name='readOne'),
+    path('loadResult/<int:routine_day_id>', views.loadResult, name='loadResult'),
+    path('delete/<int:routine_id>/<int:routine_day_id>', views.deleteRoutine, name='deleteRoutine'),
+    path('update/<int:routine_id>', views.updateRoutine, name='updateRoutine'),
 ]

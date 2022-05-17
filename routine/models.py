@@ -22,7 +22,6 @@ class routine_result(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    routine_day = models.CharField(max_length=100, blank=True, null=True)
 
 
 class day(models.Model):

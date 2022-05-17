@@ -12,7 +12,7 @@
                 <th scope="col">goal</th>
                 <th scope="col">alarm</th>
                 <th scope="col">day</th>
-                <th scope="col">result</th>
+                <th scope="col">수정/삭제</th>
             </tr>
         </thead>
         <tbody>
@@ -20,12 +20,12 @@
             {% for routine in routine_list %}
             <tr>
                 <th scope="row">{{ routine.pk }}</th>
-                <td>{{ routine.title }}</td>
+                <td><a href="{% url 'routine:readOne' routine.pk %}">{{ routine.title }}</a></td>
                 <td>{{ routine.category }}</td>
                 <td>{{ routine.goal }}</td>
                 <td>{{ routine.is_alarm }}</td>
-                <td>{{ routine.day }}</td>
                 <td>{{ routine.pk|pick }}</td>
+                <td><a href="{% url 'routine:updateRoutine' routine.pk %}">수정<a> <a class="delete" href="javascript:void(0)" data-uri="#">삭제<a></td>
             </tr>
             {% endfor %}
             {% else %}
@@ -36,4 +36,16 @@
         </tbody>
     </table>
 </div>
+{% endblock %}
+{% block script %}
+<script type='text/javascript'>
+    const delete_elements = document.getElementsByClassName("delete");
+    Array.from(delete_elements).forEach(function(element) {
+        element.addEventListener('click', function() {
+            if(confirm("정말로 삭제하시겠습니까?")) {
+                location.href = this.dataset.uri;
+            };
+        });
+    });
+</script>
 {% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<!--
+-->
+<div class="container w-75 mt-3">
+    {% if routine_list %}
+    {% for routine in routine_list %}
+    <p>[{{ routine.pk }}] '{{ routine.title }}' 일정입니다 </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">title</th>
+                <th scope="col">day</th>
+                <th scope="col">수행 여부</th>
+                <th scope="col">수행 여부 수정/삭제</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if routine_day_list %}
+            {% if routine_result_list %}
+            {% for routine_day in routine_day_list %}
+            {% for routine_result in routine_result_list %}
+            <tr>
+                <td>{{ routine_day.pk }}</td>
+                <td>{{ routine.title }}</td>
+                <td>{{ routine_day.day }}</td>
+                <td>{{ routine_result.result }}</td>
+                <td><a href="{% url 'routine:loadResult' routine_day.pk %}" class="btn btn-primary">결과 기록</a> <a href="{% url 'routine:deleteRoutine' routine.pk routine_day.pk %}" class="btn btn-danger">삭제</a></td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+            {% endif %}
+            {% endif %}
+    {% endfor %}
+    {% endif %}  
+        </tbody>
+    </table>
+</div>
+{% endblock %}

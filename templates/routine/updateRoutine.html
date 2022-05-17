@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load bootstrap5 %}
+{% load common_tags %}
+<div class="container mt-5 w-75">
+    <form method="post" action="{% url 'routine:updateRoutine' routine.pk %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="inputTitle" class="form-label">TITLE</label>
+            <input
+                type="text"
+                name="title"
+                class="form-control"
+                id="inputTitle"
+                value="{{ routine.title }}"
+            />
+        </div>
+        <div class="mb-3">
+            <label for="selectCategory" class="form-label">CATEGORY</label>
+            <select
+                id="selectCategory"
+                name="category"
+                class="form-select"
+                aria-label="Default select example"
+            >
+                <option selected>MIRACLE/HOMEWORK 선택</option>
+                <option value="MIRACLE">MIRACLE</option>
+                <option value="HOMEWORK">HOMEWORK</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="inputGoal" class="form-label">GOAL</label>
+            <input
+                name="goal"
+                type="text"
+                class="form-control"
+                id="inputGoal"
+                value="{{ routine.goal }}"
+                />
+            </div>
+        <div class="mb-3">
+            <div class="form-label">ALARM</div>
+            <div class="form-check form-check-inline">
+                <input
+                    class="form-check-input"
+                    type="radio"
+                    name="is_alarm"
+                    id="radioAlarmTrue"
+                    value="true"
+                />
+                <label class="form-check-label" for="radioAlarmTrue">알람 ON</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input
+                    class="form-check-input"
+                    type="radio"
+                    name="is_alarm"
+                    id="radioAlarmFalse"
+                    value="false"
+                />
+                <label class="form-check-label" for="radioAlarmFalse">알람 OFF</label>
+            </div>
+        </div>
+        <div class="mb-3">
+            <div class="form-label">DAY</div>
+            <div class="form-check form-check-inline">
+                <input
+                    class="form-check-input"
+                    name="days[]"
+                    type="checkbox"
+                    id="SUN"
+                    value="SUN"
+                />
+                <label class="form-check-label" for="SUN">SUN(일)</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input
+                    name="days[]"
+                    class="form-check-input"
+                    type="checkbox"
+                    id="MON"
+                    value="MON"
+                />
+                <label class="form-check-label" for="MON">MON(월)</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input
+                    name="days[]"
+                    class="form-check-input"
+                    type="checkbox"
+                    id="TUE"
+                    value="TUE"
+                />
+                <label class="form-check-label" for="TUE">TUE(화)</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input
+                    name="days[]"
+                    class="form-check-input"
+                    type="checkbox"
+                    id="WED"
+                    value="WED"
+                />
+                <label class="form-check-label" for="WED">WED(수)</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input
+                    name="days[]"
+                    class="form-check-input"
+                    type="checkbox"
+                    id="THU"
+                    value="THU"
+                />
+                <label class="form-check-label" for="THU">THU(목)</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input
+                    name="days[]"
+                    class="form-check-input"
+                    type="checkbox"
+                    id="FRI"
+                    value="FRI"
+                />
+                <label class="form-check-label" for="FRI">FRI(금)</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input
+                    name="days[]"
+                    class="form-check-input"
+                    type="checkbox"
+                    id="SAT"
+                    value="SAT"
+                />
+                <label class="form-check-label" for="SAT">SAT(토)</label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+<script>
+    let category = document.querySelector('[name=\'category\']')// select
+    let is_alarm = document.querySelectorAll('[name=\'is_alarm\']') // radio
+    
+    category.value = '{{ routine.category }}';
+    console.log('{{ routine.is_alarm }}'); // True/False
+    is_alarm.forEach(alarm=>{
+        if(alarm.value == '{{ routine.is_alarm }}'.toLowerCase()) {
+            alarm.checked = true;
+        }
+    })
+    let picked_days = '{{ routine.pk|pick }}';
+    let days = picked_days.split(',');
+    days.forEach(day => {
+        document.querySelector(`#${day}`).checked = true;
+    }) 
+
+</script>
+{% endblock %}

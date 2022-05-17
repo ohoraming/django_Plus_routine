@@ -36,14 +36,14 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'account',
     'routine',
+    'rest_framework',
+    'bootstrap5',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
-    'bootstrap5'
 ]
 
 MIDDLEWARE = [
