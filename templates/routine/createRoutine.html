@@ -1,20 +1,11 @@
 {% extends 'base.html' %} 
 {% block content %}
 <!--
-    <routine의 data>
-title:  문자열
-category: 선택: miracle/homework
-goal: 문자열
-alarm: 선택: T/F
-
-    <routine_day의 data>
-day: 일-토 요일 중에서 선택
-
 ※ 반드시 tag에 name 값 넣기!
 ※ csrf_token 추가
 -->
 <div class="container mt-5 w-75">
-    <form method="post" action="{% url 'routine:create' %}">
+    <form id="createForm" method="post" action="{% url 'routine:create' %}">
         {% csrf_token %}
         <div class="mb-3">
             <label for="inputTitle" class="form-label">TITLE</label>
@@ -23,6 +14,7 @@ day: 일-토 요일 중에서 선택
                 name="title"
                 class="form-control"
                 id="inputTitle"
+                placeholder="제목을 입력하세요"
             />
         </div>
         <div class="mb-3">
@@ -45,8 +37,9 @@ day: 일-토 요일 중에서 선택
                 type="text"
                 class="form-control"
                 id="inputGoal"
+                placeholder="목표를 입력하세요"
                 />
-            </div>
+        </div>
         <div class="mb-3">
             <div class="form-label">ALARM</div>
             <div class="form-check form-check-inline">
@@ -69,7 +62,7 @@ day: 일-토 요일 중에서 선택
                 />
                 <label class="form-check-label" for="radioAlarmFalse">알람 OFF</label>
             </div>
-        </div>
+        </div> 
         <div class="mb-3">
             <div class="form-label">DAY</div>
             <div class="form-check form-check-inline">
@@ -143,8 +136,50 @@ day: 일-토 요일 중에서 선택
                 <label class="form-check-label" for="SAT">SAT(토)</label>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <div style="text-align: center;">
+            <button type="submit" class="btn btn-primary my-3">일정 등록하기</button>
+        </div>
     </form>
 </div>
+{% endblock %}
+{% block script %}
+<script type='text/javascript'>
+    const form = document.getElementById('createForm');
+    function intercept (e) {
+        e.preventDefault();
+        
+        const getEl = (name) => form.querySelector(`[name="${name}"]`);
+        const getEls = (name) => form.querySelectorAll(`[name="${name}"]`);
 
+        const csrfmiddlewaretoken = getEl('csrfmiddlewaretoken');
+        const title = getEl('title');
+        const category = getEl('category');
+        const goal = getEl('goal');
+        let is_alarm, days = [];
+
+        getEls('is_alarm').forEach(al=>{
+            if(al.checked) is_alarm = al.value;
+        });
+        
+        getEls('days[]').forEach(day=>{
+            if(day.checked) days.push(day.value);
+        });
+
+        let data = new FormData();
+    
+        data.append("title", title.value)  
+        data.append("goal", goal.value)
+        data.append("category", category.value)
+        data.append("is_alarm", is_alarm)
+        data.append("days[]", days)
+        data.append("csrfmiddlewaretoken", csrfmiddlewaretoken.value)
+
+        axios.post('{% url "routine:create" %}',data).then(res => {
+            if(res.status === 200) {
+                location = '{% url "routine:readAll" %}';
+            }
+        });
+    }
+    form.addEventListener('submit', intercept);
+</script>
 {% endblock %}

@@ -19,12 +19,21 @@ from routine import views
 app_name = 'routine'
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    # Create
     path('create/', views.create, name='create'),
+    
+    # Read
+    path('', views.index, name='index'),
     path('routine_form/', views.renderRoutineForm, name='renderRoutineForm'),
-    path('readAll/<int:user_id>', views.readAll, name='readAll'),
-    path('readOne/<int:routine_id>', views.readOne, name='readOne'),
-    path('loadResult/<int:routine_day_id>', views.loadResult, name='loadResult'),
-    path('delete/<int:routine_id>/<int:routine_day_id>', views.deleteRoutine, name='deleteRoutine'),
-    path('update/<int:routine_id>', views.updateRoutine, name='updateRoutine'),
+    path('readAll/', views.readAll, name='readAll'),
+    path('readOne/<int:routine_id>/', views.readOne, name='readOne'),
+    path('Result/<int:routine_id>/', views.updateResult, name='updateResult'),
+    
+    # Update
+    path('update/<int:routine_id>/', views.updateRoutine, name='updateRoutine'),
+    path('updateResult/<int:routine_id>/', views.updateResult, name='updateResult'),
+    
+    # Delete
+    path('delete/<int:user_id>/<int:routine_id>/', views.deleteRoutine, name='deleteRoutine'),
+    path('deleteDay/<int:routine_id>/<int:routine_day_id>', views.deleteDay, name='deleteDay'),
 ]

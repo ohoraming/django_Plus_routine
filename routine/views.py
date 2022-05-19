@@ -3,12 +3,14 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from rest_framework.decorators import api_view
+from routine.forms import RoutineForm
 from account.models import MyUser
-from routine.forms import UpdateForm, UpdateDayForm
 from routine.models import day, routine, routine_result
 
 # Create your views here.
 
+@api_view(['GET'])
+@login_required(login_url='account:login') # 로그인이 필요한 작업
 def index(request):
     """
         routine 생성/조회하는 메뉴 페이지 render
@@ -26,10 +28,13 @@ def renderRoutineForm(request):
 @api_view(['POST'])
 @login_required(login_url='account:login') # 로그인이 필요한 작업
 def create(request):
+    print(request)
+    print(request.GET)
+    print(request.POST)
     """
         routine 폼에 입력한 내용을 DB에 저장
     """
-    user = MyUser.objects.get(pk=request.user.pk) # 생성된 user의 id 값을 가져옴
+    user = MyUser.objects.get(pk=request.user.pk) 
 
     title = request.POST.get('title')
     category = request.POST.get('category')  
@@ -53,13 +58,13 @@ def create(request):
             day = dd,
             routine_id = new_routine
         )
-        new_result = routine_result(
-            result = 'NOT(안 함)',
-            is_deleted = False,
-            routine_id = new_routine
-        )
         new_day.save()
-    
+
+    new_result = routine_result(
+        result = 'NOT',
+        is_deleted = False,
+        routine_id = new_routine
+    )
     new_result.save()
 
     result_response = {
@@ -73,18 +78,23 @@ def create(request):
     }
     user_id = user.pk
 
-    # return JsonResponse(result) 
-    return redirect(reverse('routine:readAll', kwargs={'user_id':user_id})) # 전체 routine 보는 페이지
+    return JsonResponse(result_response) 
+    # return redirect(reverse('routine:readAll')) # 전체 routine 보는 페이지
 
 @login_required(login_url='account:login') # 로그인이 필요한 작업
-def readAll(request, user_id):
+@api_view(['GET'])
+def readAll(request):
+    """
+        사용자id로 저장된 모든 routine과 result 조회 
+    """
+    routine_list = routine.objects.filter(account_id_id=request.user.pk).order_by('routine_id') # 접속한 user의 id값으로 routine 모두 조회
+    routine_result_list = routine_result.objects.all()
 
-    """
-        사용자id로 저장된 모든 routine 조회 
-    """
-    routine_list = routine.objects.filter(account_id_id=user_id) # 접속한 user의 id값으로 routine 모두 조회
     
-    context = {'routine_list': routine_list}
+    context = {
+        'routine_list': routine_list,
+        'routine_result_list': routine_result_list
+        }
 
     """
         아래 result_response 다시 작성!! 
@@ -111,56 +121,127 @@ def readAll(request, user_id):
 
     return render(request, 'routine/routineList.html', context)
 
-def loadResult(request, routine_day_id):
-    """
-        result 폼에 입력한 내용을 DB에 저장
-        생성될 때 result가 기본적으로 'NOT(안함)'으로 기록되기에 update로 명명
-    """
-
-    return render(request, 'routine/updateResult.html')
-
+@api_view(['GET'])
 def readOne(request, routine_id):
     """
         routine id로 선택한 일정 조회
     """
-    routine_list = routine.objects.filter(pk=routine_id)
+    routine_list = routine.objects.get(pk=routine_id)
+    routine_result_list = routine_result.objects.get(routine_id_id=routine_id)
     routine_day_list = day.objects.filter(routine_id_id=routine_id)
-    routine_result_list = routine_result.objects.filter(routine_id_id=routine_id)
 
     context = {
         'routine_list': routine_list,
-        'routine_day_list': routine_day_list,
         'routine_result_list': routine_result_list,
+        'routine_day_list': routine_day_list,
     }   
+
+    result_response = {
+        "data": {
+            "goal": "  2",
+            "id": 1,
+            "result": "NOT",
+            "title": " !",
+            "days": ["MON", "TUE", "FRI"],
+        },
+        "message": {
+            "msg": "  .",
+            "status": "ROUTINE_DETAIL_OK"
+        }
+    }
 
     return render(request, 'routine/routineOne.html', context)
 
-@login_required(login_url='account:login') # 로그인이 필요한 작업
-def deleteRoutine(request, routine_id, routine_day_id):
+@api_view(['POST'])
+def updateResult(request, routine_id):
     """
-        선택된 routine_day를 삭제
+        선택한 routine의 result 수정
+    """
+    if request.method == 'POST':
+        routine_list = routine.objects.filter(routine_id=routine_id).order_by('routine_id') # 접속한 user의 id값으로 routine 모두 조회
+        selected_result = routine_result.objects.filter(routine_id_id=routine_id)
+
+        selected_result.delete()
+        new_result = request.POST.get('result')
+        
+        changed_result = routine_result(
+            result = new_result,
+            routine_id_id = routine_id
+        )
+        changed_result.save()
+    else:
+        routine_list = routine.objects.filter(account_id_id=request.user.pk).order_by('routine_id') # 접속한 user의 id값으로 routine 모두 조회
+        selected_result = routine_result.object.get(routine_id_id=routine_id)
+
+    context = {
+        'routine_list': routine_list,
+        'routine_result_list': selected_result
+        }
+    
+    return render(request, 'routine/routineList.html', context)
+
+@api_view(['GET'])
+@login_required(login_url='account:login') # 로그인이 필요한 작업
+def deleteDay(request, routine_id, routine_day_id):
+    """
+        선택한 routine_day 삭제
     """
     selected_routine_day = day.objects.get(pk=routine_day_id)
     selected_routine_day.delete()
+    
     return redirect(reverse('routine:readOne', kwargs={'routine_id': routine_id}))
 
+@api_view(['GET'])
+@login_required(login_url='account:login') # 로그인이 필요한 작업
+def deleteRoutine(request, routine_id, user_id):
+    """
+        선택한 routine 삭제
+    """
+    selected_routine = routine.objects.get(pk=routine_id)
+    selected_routine.delete()
 
+    result_response = {
+        "data": {
+            "account_id": user_id,
+            "routine_id": routine_id,
+        },
+        "message": {
+            "msg": "  .",
+            "status": "ROUTINE_DELETE_OK"
+        }
+    }
+
+    return redirect(reverse('routine:readAll'))
+
+@api_view(['GET','POST'])
 @login_required(login_url='account:login') # 로그인이 필요한 작업
 def updateRoutine(request, routine_id):
+    """
+        선택한 routine 수정
+    """
     if request.method == 'POST':
         selected_routine = routine.objects.get(pk=routine_id)
         selected_day = day.objects.filter(routine_id_id=routine_id)
-        form = UpdateForm(request.POST, initial=selected_routine)
+        
+        form = RoutineForm(request.POST, instance=selected_routine)
 
-        for oneday in list(selected_day):
-            dayform = UpdateDayForm(request.POST, initial=oneday)
-            dayform.save()
+        days = request.POST.getlist('days[]')
+
+        selected_day.delete()
+
+        for new_day in days:
+            df = day(
+                day = new_day,
+                routine_id_id=routine_id
+            )
+            df.save()
 
         if form.is_valid():
             form.save()
-
+        return redirect(reverse('routine:readAll'))
     else:
         selected_routine = routine.objects.get(pk=routine_id)
-        context = {'routine': selected_routine}
+
+    context = {'routine': selected_routine}
     
     return render(request, 'routine/updateRoutine.html', context)

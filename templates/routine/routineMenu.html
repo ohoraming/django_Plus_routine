@@ -5,9 +5,11 @@
     루틴 생성(버튼), 날짜별 루틴 조회 되도록 구현하기!
 -->
 <div class="container w-75 mt-3">
-    {{ user.id }}
-    <div><a class="btn btn-primary m-3" href="{% url 'routine:renderRoutineForm' %}">새 routine 생성</a></div>
-    <div><a class="btn btn-primary m-3" href="{% url 'routine:readAll' user.id %}">routine 목록 조회</a></div>
-    <div><a class="btn btn-primary m-3" href="#">routine 단건 조회</a></div>
+    <div style="text-align: center;">
+        <a class="btn btn-primary my-5" href="{% url 'routine:renderRoutineForm' %}">새 routine 생성</a>
+    </div>
+    <div style="text-align: center;">
+        <a class="btn btn-primary my-5" href="{% url 'routine:readAll' %}">나의 routine 목록 조회</a>
+    </div>
 </div>
 {% endblock %}

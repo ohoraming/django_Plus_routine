@@ -134,15 +134,19 @@
                 <label class="form-check-label" for="SAT">SAT(토)</label>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <div style="text-align: center;">
+            <button type="submit" class="btn btn-primary my-3">일정 수정하기</button>
+            <a href="{% url 'routine:readAll' %}" class="btn btn-primary">내 일정 목록으로 가기</a>
+        </div>
     </form>
 </div>
-<script>
+{% endblock %}
+{% block script %}
+<script type='text/javascript'>
     let category = document.querySelector('[name=\'category\']')// select
     let is_alarm = document.querySelectorAll('[name=\'is_alarm\']') // radio
     
     category.value = '{{ routine.category }}';
-    console.log('{{ routine.is_alarm }}'); // True/False
     is_alarm.forEach(alarm=>{
         if(alarm.value == '{{ routine.is_alarm }}'.toLowerCase()) {
             alarm.checked = true;
@@ -153,6 +157,5 @@
     days.forEach(day => {
         document.querySelector(`#${day}`).checked = true;
     }) 
-
 </script>
 {% endblock %}

@@ -2,35 +2,45 @@
 {% block content %}
 {% load common_tags %}
 <div class="container mt-5 w-75">
-    <p>{{ user.username }}님의 전체 루틴 리스트입니다!</p>
+    <h4>{{ user.username }}님의 전체 루틴 리스트입니다!</h4>
+    <h5>일정을 선택해 결과를 기록하세요 :)</h5>
     <table class="table">
         <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">title</th>
-                <th scope="col">category</th>
-                <th scope="col">goal</th>
-                <th scope="col">alarm</th>
-                <th scope="col">day</th>
-                <th scope="col">수정/삭제</th>
+            <tr style="text-align: center;">
+                <th scope="col">TITLE</th>
+                <th scope="col">GOAL</th>
+                <th scope="col">DAY</th>
+                <th scope="col">RESULT</th>
+                <th scope="col">일정 수정/삭제</th>
             </tr>
         </thead>
         <tbody>
-            {% if routine_list %}  <!-- my_routine이 있으면,-->
+            {% if routine_list %} 
             {% for routine in routine_list %}
-            <tr>
-                <th scope="row">{{ routine.pk }}</th>
-                <td><a href="{% url 'routine:readOne' routine.pk %}">{{ routine.title }}</a></td>
-                <td>{{ routine.category }}</td>
+            <tr style="text-align: center;">
+                <td><h4><a href="{% url 'routine:readOne' routine.pk %}">{{ routine.title }}</a></h4></td>
                 <td>{{ routine.goal }}</td>
-                <td>{{ routine.is_alarm }}</td>
                 <td>{{ routine.pk|pick }}</td>
-                <td><a href="{% url 'routine:updateRoutine' routine.pk %}">수정<a> <a class="delete" href="javascript:void(0)" data-uri="#">삭제<a></td>
+                {% for routine_result in routine_result_list %}
+                {% if routine_result.routine_id_id == routine.pk %}
+                <td>{{ routine_result.result }}</td>
+                {% endif %}
+                {% endfor %}
+                <td>
+                    <a href="{% url 'routine:updateRoutine' routine.pk %}" class="btn btn-primary">수정<a> 
+                    <a class="delete btn btn-danger" href="javascript:void(0)" data-uri="{% url 'routine:deleteRoutine' user.pk routine.pk %}">삭제<a>
+                </td>
             </tr>
             {% endfor %}
             {% else %}
             <tr>
-                <td colspan="7"><h3>등록된 routine이 없습니다!</h5></td>
+                <td colspan="7">
+                    <h3 style="text-align: center;" class="my-5">등록된 일정이 없습니다!</h5>
+                    <div style="text-align: center;" class="my-5">
+                        <a href="{% url 'routine:renderRoutineForm' %}" class="btn btn-primary" >새 일정 등록하러 가기</a>
+                    </div>
+                </td>
+                    
             </tr>
             {% endif %}
         </tbody>
