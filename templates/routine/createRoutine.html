@@ -1,9 +1,5 @@
 {% extends 'base.html' %} 
 {% block content %}
-<!--
-※ 반드시 tag에 name 값 넣기!
-※ csrf_token 추가
--->
 <div class="container mt-5 w-75">
     <form id="createForm" method="post">
         {% csrf_token %}
