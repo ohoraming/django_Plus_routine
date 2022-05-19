@@ -25,9 +25,10 @@ urlpatterns = [
     # Read
     path('', views.index, name='index'),
     path('routine_form/', views.renderRoutineForm, name='renderRoutineForm'),
+    path('list/', views.render_read_all, name='render_all'),
     path('readAll/', views.readAll, name='readAll'),
+    path('read/<int:routine_id>/', views.render_read_one, name='render_read'),
     path('readOne/<int:routine_id>/', views.readOne, name='readOne'),
-    path('Result/<int:routine_id>/', views.updateResult, name='updateResult'),
     
     # Update
     path('update/<int:routine_id>/', views.updateRoutine, name='updateRoutine'),

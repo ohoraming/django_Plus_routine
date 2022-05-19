@@ -5,7 +5,7 @@
 ※ csrf_token 추가
 -->
 <div class="container mt-5 w-75">
-    <form id="createForm" method="post" action="{% url 'routine:create' %}">
+    <form id="createForm" method="post">
         {% csrf_token %}
         <div class="mb-3">
             <label for="inputTitle" class="form-label">TITLE</label>
@@ -176,7 +176,7 @@
 
         axios.post('{% url "routine:create" %}',data).then(res => {
             if(res.status === 200) {
-                location = '{% url "routine:readAll" %}';
+                location = '{% url "routine:render_all" %}';
             }
         });
     }

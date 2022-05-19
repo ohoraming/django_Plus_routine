@@ -1,61 +1,65 @@
-{% extends 'base.html' %} 
-{% block content %}
-{% load common_tags %}
+{% extends 'base.html' %} {% block content %} {% load common_tags %}
 <div class="container mt-5 w-75">
     <h4>{{ user.username }}님의 전체 루틴 리스트입니다!</h4>
     <h5>일정을 선택해 결과를 기록하세요 :)</h5>
     <table class="table">
         <thead>
-            <tr style="text-align: center;">
+            <tr style="text-align: center">
                 <th scope="col">TITLE</th>
                 <th scope="col">GOAL</th>
-                <th scope="col">DAY</th>
                 <th scope="col">RESULT</th>
                 <th scope="col">일정 수정/삭제</th>
             </tr>
         </thead>
-        <tbody>
-            {% if routine_list %} 
-            {% for routine in routine_list %}
-            <tr style="text-align: center;">
-                <td><h4><a href="{% url 'routine:readOne' routine.pk %}">{{ routine.title }}</a></h4></td>
-                <td>{{ routine.goal }}</td>
-                <td>{{ routine.pk|pick }}</td>
-                {% for routine_result in routine_result_list %}
-                {% if routine_result.routine_id_id == routine.pk %}
-                <td>{{ routine_result.result }}</td>
-                {% endif %}
-                {% endfor %}
-                <td>
-                    <a href="{% url 'routine:updateRoutine' routine.pk %}" class="btn btn-primary">수정<a> 
-                    <a class="delete btn btn-danger" href="javascript:void(0)" data-uri="{% url 'routine:deleteRoutine' user.pk routine.pk %}">삭제<a>
-                </td>
-            </tr>
-            {% endfor %}
-            {% else %}
-            <tr>
-                <td colspan="7">
-                    <h3 style="text-align: center;" class="my-5">등록된 일정이 없습니다!</h5>
-                    <div style="text-align: center;" class="my-5">
-                        <a href="{% url 'routine:renderRoutineForm' %}" class="btn btn-primary" >새 일정 등록하러 가기</a>
-                    </div>
-                </td>
-                    
-            </tr>
-            {% endif %}
-        </tbody>
+        <tbody></tbody>
     </table>
 </div>
-{% endblock %}
-{% block script %}
-<script type='text/javascript'>
-    const delete_elements = document.getElementsByClassName("delete");
-    Array.from(delete_elements).forEach(function(element) {
-        element.addEventListener('click', function() {
-            if(confirm("정말로 삭제하시겠습니까?")) {
-                location.href = this.dataset.uri;
-            };
-        });
+{% endblock %} {% block script %}
+<script type="text/javascript">
+    window.addEventListener("click", function (e) {
+        const target = e.target;
+        if(!target.classList.contains('delete')) return;
+
+        if (confirm("정말로 삭제하시겠습니까?")) {
+            location.href = target.dataset.uri;
+        }
     });
+
+    const dataForm = new FormData();
+    dataForm.append("csrfmiddlewaretoken", '{% csrf_token %}');
+    axios
+        .get('{% url "routine:readAll" %}', dataForm)
+        .then((res) => res.data)
+        .then((datas) => {
+            if (datas.data.length > 0) {
+                datas.data.forEach((data) => {
+                    document
+                        .querySelector("table tbody")
+                        .insertAdjacentHTML("beforeend", template(data));
+                });
+            } else {
+                document.querySelector("table tbody").insertAdjacentHTML(
+                    "beforeend",
+                    `<tr style="text-align: center;">
+                <span>등록된 루틴이 없습니다!</span>
+            </tr>`
+                );
+            }
+        });
+
+    const template = ({ id, title, goal, days, result }) => `
+    <tr style="text-align: center;">
+        <td>
+            <h4>
+                <a href="/routine/read/${id}/">${title}</a>
+            </h4>
+        </td>
+        <td>${goal}</td>
+        <td>${result}</td>
+        <td>
+            <a href="/routine/update/${id}/" class="btn btn-primary">수정<a> 
+            <a class="delete btn btn-danger" href="javascript:void(0)" data-uri="/routine/delete/{{user.pk}}/${id}/">삭제<a>
+        </td>
+    </tr>`;
 </script>
 {% endblock %}

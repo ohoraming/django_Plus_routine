@@ -3,7 +3,7 @@
 {% load bootstrap5 %}
 {% load common_tags %}
 <div class="container mt-5 w-75">
-    <form method="post" action="{% url 'routine:updateRoutine' routine.pk %}">
+    <form id="updateForm" method="post" action="{% url 'routine:updateRoutine' routine.pk %}">
         {% csrf_token %}
         <div class="mb-3">
             <label for="inputTitle" class="form-label">TITLE</label>
@@ -66,7 +66,7 @@
             <div class="form-check form-check-inline">
                 <input
                     class="form-check-input"
-                    name="days[]"
+                    name="days"
                     type="checkbox"
                     id="SUN"
                     value="SUN"
@@ -75,7 +75,7 @@
             </div>
             <div class="form-check form-check-inline">
                 <input
-                    name="days[]"
+                    name="days"
                     class="form-check-input"
                     type="checkbox"
                     id="MON"
@@ -85,7 +85,7 @@
             </div>
             <div class="form-check form-check-inline">
                 <input
-                    name="days[]"
+                    name="days"
                     class="form-check-input"
                     type="checkbox"
                     id="TUE"
@@ -95,7 +95,7 @@
             </div>
             <div class="form-check form-check-inline">
                 <input
-                    name="days[]"
+                    name="days"
                     class="form-check-input"
                     type="checkbox"
                     id="WED"
@@ -105,7 +105,7 @@
             </div>
             <div class="form-check form-check-inline">
                 <input
-                    name="days[]"
+                    name="days"
                     class="form-check-input"
                     type="checkbox"
                     id="THU"
@@ -115,7 +115,7 @@
             </div>
             <div class="form-check form-check-inline">
                 <input
-                    name="days[]"
+                    name="days"
                     class="form-check-input"
                     type="checkbox"
                     id="FRI"
@@ -125,7 +125,7 @@
             </div>
             <div class="form-check form-check-inline">
                 <input
-                    name="days[]"
+                    name="days"
                     class="form-check-input"
                     type="checkbox"
                     id="SAT"
@@ -156,6 +156,35 @@
     let days = picked_days.split(',');
     days.forEach(day => {
         document.querySelector(`#${day}`).checked = true;
-    }) 
+    });
+
+    document.querySelector('#updateForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const form = e.target;
+        let alarm = null;
+        const checkbox = [];
+        form.is_alarm.forEach(checked => {
+            if(checked.checked) {
+                alarm = checked.value
+            }
+        });
+        form.days.forEach(checked => {
+            if(checked.checked) {
+                checkbox.push(checked.value);
+            }
+        });
+        const data = new FormData();
+        data.append('csrfmiddlewaretoken', document.querySelector('[name="csrfmiddlewaretoken"]').value);
+        data.append('title', form.title.value);
+        data.append('category', form.category.value);
+        data.append('goal', form.goal.value);
+        data.append('is_alarm', alarm);
+        data.append('days[]', checkbox);
+        axios.post('{% url "routine:updateRoutine" routine.pk %}', data).then(res => {
+            if(res.status === 200) {
+                location = '{% url "routine:render_all" %}';
+            }
+        });
+    })
 </script>
 {% endblock %}
