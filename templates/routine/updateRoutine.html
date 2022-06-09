@@ -179,7 +179,7 @@
         data.append('category', form.category.value);
         data.append('goal', form.goal.value);
         data.append('is_alarm', alarm);
-        data.append('days[]', checkbox);
+        data.append('days', checkbox);
         axios.post('{% url "routine:updateRoutine" routine.pk %}', data).then(res => {
             if(res.status === 200) {
                 location = '{% url "routine:render_all" %}';

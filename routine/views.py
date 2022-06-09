@@ -166,7 +166,7 @@ def updateResult(request, routine_id):
             routine_id_id=routine_id
         )
         changed_result.save()
-        return redirect('/routin/list/')
+        return redirect('/routine/list/')
     else:
         routine_list = routine.objects.filter(
             account_id_id=request.user.pk).order_by('routine_id')
@@ -227,7 +227,7 @@ def updateRoutine(request, routine_id):
 
         form = RoutineForm(request.POST, instance=selected_routine)
 
-        days = request.POST.getlist('days[]')
+        days = request.POST.getlist('days')
 
         selected_day.delete()
 
@@ -240,7 +240,7 @@ def updateRoutine(request, routine_id):
 
         if form.is_valid():
             form.save()
-        return redirect(reverse('routine:readAll'))
+        return redirect(reverse('routine:render_all'))
     else:
         selected_routine = routine.objects.get(pk=routine_id)
 
