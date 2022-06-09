@@ -14,12 +14,18 @@
 ## 설치 방법
   ```bash
   git clone https://github.com/ohoraming/django_Plus_routine.git
-  cd django_Plus_routine-main/
+  ```
+  ```bash
+  cd django_Plus_routine/
   ```
   데이터베이스 이름을 `routine`으로 생성합니다
-  ```
+  ```bash
   python manage.py makemigrations
+  ```
+  ```bash
   python manage.py migrate
+  ```
+  ```bash
   python manage.py runserver
   ```
 
