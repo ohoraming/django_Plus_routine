@@ -166,6 +166,7 @@ def updateResult(request, routine_id):
             routine_id_id=routine_id
         )
         changed_result.save()
+        return redirect('/routin/list/')
     else:
         routine_list = routine.objects.filter(
             account_id_id=request.user.pk).order_by('routine_id')

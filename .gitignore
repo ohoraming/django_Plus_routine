@@ -1,4 +1,6 @@
-secret_file.py
+# secret_file.py
+
+migrations/
 
 # Created by https://www.toptal.com/developers/gitignore/api/windows,python,django
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,python,django
